@@ -62,7 +62,7 @@ function CausalShoesDetail() {
                <img
                  src={mainimage}
                  alt={products.heading}
-                 className='w-full h-[500px] border rounded-lg  border-gray-600/20 bg-white object-contain'
+                 className='w-full h-125 border rounded-lg  border-gray-600/20 bg-white object-contain'
                />
              </div>
            </div>
@@ -168,6 +168,7 @@ function CausalShoesDetail() {
                  </div>
                </div>
              </div>
+
            </div>
          </div>
        </div>

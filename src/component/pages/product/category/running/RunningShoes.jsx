@@ -17,7 +17,6 @@ function RunningShoes({ products = runnig }) {
 
               <div
                 key={product.id}
-                // Send the clicked shoe to the detail page, while the URL still shows the heading.
                 onClick={() => navigate(
                   `/product/running-shoes/${encodeURIComponent(product.heading)}`,
                   { state: { product } }
@@ -37,7 +36,7 @@ function RunningShoes({ products = runnig }) {
                         className='h-full w-full object-contain transition-all duration-300 group-hover:scale-110'
                       />
 
-                      <div className='absolute left-2 top-3 rounded-2xl bg-white/70 px-2.5 py-0.5 text-black border-1 border-dashed'>
+                      <div className='absolute left-2 top-3 rounded-2xl bg-white/70 px-2.5 py-0.5 text-black border border-dashed'>
                         Running
                       </div>
 

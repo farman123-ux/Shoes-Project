@@ -1,15 +1,15 @@
 import img1 from '../../assets/circket-shoes/circket1.jpg'
-import img2 from '../../assets/circket-shoes/circket2.jpg'
-import img3 from '../../assets/circket-shoes/circket8.jpg'
+import img2 from '../../assets/circket-shoes/circket2.webp'
+import img3 from '../../assets/circket-shoes/circket3.avif'
 import img4 from '../../assets/circket-shoes/football1.jpg'
 import img5 from '../../assets/circket-shoes/football2.jpg'
 import img6 from '../../assets/circket-shoes/football3.jpg'
 import img7 from '../../assets/circket-shoes/hockey1.webp'
 import img8 from '../../assets/circket-shoes/hockey2.webp'
 import img9 from '../../assets/circket-shoes/hockey3.webp'
-import img10 from '../../assets/circket-shoes/sport1.webp'
-import img11 from '../../assets/circket-shoes/sport2.webp'
-import img12 from '../../assets/circket-shoes/sport3.webp'
+import img10 from '../../assets/circket-shoes/sport1.jpg'
+import img11 from '../../assets/circket-shoes/sport2.jpg'
+import img12 from '../../assets/circket-shoes/sport3.avif'
 import icon from '../../assets/start.svg'
 
 export const sportsShoes = [
@@ -39,67 +39,67 @@ export const sportsShoes = [
         id: 3,
         Image: img3,
         para: "Sports",
-        heading: "Kookaburra KC 2.0",
+        heading: "CRICKET BLADE - 7 SPIKE SHOES",
         icon: icon,
         rat: 4.9,
         order: "(370)",
         Currancy: "PKR",
-        price: 20999
+        price: 30999
     },
     {
         id: 4,
         Image: img4,
         para: "Sports",
-        heading: "Nike Men's Vopor",
+        heading: "Puma Mens Attacanto Firm",
         icon: icon,
-        rat: 4.8,
+        rat: 4.6,
         order: "(305)",
         Currancy: "PKR",
-        price: 28999
+        price: 17999
     },
     {
         id: 5,
         Image: img5,
         para: "Sports",
-        heading: "Nike vapor Edge 360",
+        heading: "adidas Unisex-Adult Goletto IX Firm Ground",
         icon: icon,
-        rat: 4.9,
+        rat: 4.8,
         order: "(270)",
         Currancy: "PKR",
-        price: 40999
+        price: 13299
     },
     {
         id: 6,
         Image: img6,
         para: "Sports",
-        heading: "Nike Vapor Edge 360",
+        heading: "Nike Vapor Speed",
         icon: icon,
-        rat: 4.8,
+        rat: 4.6,
         order: "(320)",
         Currancy: "PKR",
-        price: 51999
+        price: 16699
     },
      {
         id: 7,
         Image: img7,
         para: "Sports",
-        heading: "Nike Vapor Dirve",
+        heading: "Hockey Youngstar Blue",
         icon: icon,
-        rat: 4.9,
+        rat: 4.3,
         order: "(520)",
         Currancy: "PKR",
-        price: 19999
+        price: 13999
     }, 
     {
         id: 8,
         Image: img8,
         para: "Sports",
-        heading: "Nike Vapor Drive",
+        heading: "Fabela X 2 Dual Lilac",
         icon: icon,
         rat: 4.8,
         order: "(410)",
         Currancy: "PKR",
-        price: 19999
+        price: 30199
     },
     {
         id: 9,
@@ -116,34 +116,34 @@ export const sportsShoes = [
         id: 10,
         Image: img10,
         para: "Sports",
-        heading: "Grand Attack",
+        heading: "ASICS Men's Gel-Kayano 32 ",
         icon: icon,
-        rat: 4.9,
+        rat: 4.3,
         order: "(643)",
         Currancy: "PKR",
-        price: 9999
+        price: 30999
     },
     {
         id: 11,
         Image: img11,
         para: "Sports",
-        heading: "PUMA Men's",
+        heading: "Topo Athletic Men's Phantom 4",
         icon: icon,
-        rat: 4.9,
+        rat: 4.3,
         order: "(90)",
         Currancy: "PKR",
-        price: 15999
+        price: 38999
     },
     {
         id: 12,
         Image: img12,
         para: "Sports",
-        heading: "Under Armour",
+        heading: "UA Charged Assert 10",
         icon: icon,
-        rat: 4.9,
+        rat: 4.6,
         order: "(810)",
         Currancy: "PKR",
-        price: 17999
+        price: 17399
     },
     
 

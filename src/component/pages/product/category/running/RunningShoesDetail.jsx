@@ -11,6 +11,7 @@ function RunningShoesDetail() {
   const [smallsize, setSmallsize] = useState(null)
   const [inc, setInc] = useState(false);
   const [dec, setDec] = useState(false);
+  const [active, setActive] = useState(false)
 
   const selectedHeading = decodeURIComponent(heading || '')
   const clickedProduct = state?.product
@@ -63,7 +64,7 @@ function RunningShoesDetail() {
             <img
               src={mainimage}
               alt={product.heading}
-              className='w-full h-[500px] border rounded-lg  border-gray-600/20 bg-white object-contain'
+              className='w-full h-125 border rounded-lg  border-gray-600/20 bg-white object-contain'
             />
           </div>
         </div>
@@ -128,7 +129,7 @@ function RunningShoesDetail() {
               ))}
             </div>
           </div>
-          <div className='flex items-center gap-5 mt-6'>
+          <div className='flex items-center  justify-center gap-5 mt-6'>
             <button
               onClick={decrement}
               className={`px-4 py-2 rounded ${dec ? "bg-red-500 text-white" : "bg-gray-300"
@@ -169,7 +170,12 @@ function RunningShoesDetail() {
               </div>
             </div>
           </div>
+          <div className='justify-center flex mt-5 '>
+            <button onClick={() => setActive(!active)} className={`px-5 py-3 rounded text-white cursor-pointer   ${active ? "bg-green-500" : "bg-red-500"
+              }`}>Add To card</button>
+          </div>
         </div>
+
       </div>
     </div>
   )
