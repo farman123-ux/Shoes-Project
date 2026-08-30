@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 import DashBoard from './bashboard/DashBoard'
 
@@ -19,33 +20,62 @@ import { formalShoes } from '../../constant/formal'
 import { childShoes } from '../../constant/childrenShoes'
 
 function Product({ initialCategory = 'all', categoryRoutes = {} }) {
-
     const navigate = useNavigate()
+    const { customProducts = [] } = useSelector((state) => state.product)
 
     const [price, setPrice] = useState('featured')
+    const [searchQuery, setSearchQuery] = useState('')
     const activeCategory = initialCategory
 
     const changeCategory = (category) => {
-        // The route paths come from App.jsx, so this page only triggers navigation.
         navigate(categoryRoutes[category])
     }
 
-    const sortProducts = (products) => {
+    const filterAndSortProducts = (products) => {
+        let filtered = [...products]
 
-        const sortedProducts = [...products]
+        if (searchQuery.trim()) {
+            const q = searchQuery.toLowerCase().trim()
+            filtered = filtered.filter(
+                (p) =>
+                    p.heading?.toLowerCase().includes(q) ||
+                    p.para?.toLowerCase().includes(q) ||
+                    p.category?.toLowerCase().includes(q)
+            )
+        }
 
         if (price === 'low-to-high') {
-            return sortedProducts.sort((a, b) => a.price - b.price)
+            return filtered.sort((a, b) => a.price - b.price)
         }
 
         if (price === 'high-to-low' || price === 'highest') {
-            return sortedProducts.sort((a, b) => b.price - a.price)
+            return filtered.sort((a, b) => b.price - a.price)
         }
 
-        return sortedProducts
+        return filtered
     }
 
+    const customRunning = customProducts.filter(
+      (p) => p.category === 'running' || p.para?.toLowerCase() === 'running'
+    )
+    const customCausal = customProducts.filter(
+      (p) => p.category === 'causal' || p.para?.toLowerCase() === 'causal' || p.para?.toLowerCase() === 'casual'
+    )
+    const customSports = customProducts.filter(
+      (p) => p.category === 'sports' || p.para?.toLowerCase() === 'sports'
+    )
+    const customBasketball = customProducts.filter(
+      (p) => p.category === 'basketball' || p.para?.toLowerCase() === 'basketball'
+    )
+    const customFormal = customProducts.filter(
+      (p) => p.category === 'formal' || p.para?.toLowerCase() === 'formal'
+    )
+    const customChild = customProducts.filter(
+      (p) => p.category === 'child' || p.para?.toLowerCase() === 'child'
+    )
+
     const allShoes = [
+        ...customProducts,
         ...runnig,
         ...causalShoes,
         ...sportsShoes,
@@ -54,78 +84,90 @@ function Product({ initialCategory = 'all', categoryRoutes = {} }) {
         ...childShoes
     ]
 
-    const sortedAllShoes = sortProducts(allShoes)
-    const sortedRunning = sortProducts(runnig)
-    const sortedCausal = sortProducts(causalShoes)
-    const sortedSports = sortProducts(sportsShoes)
-    const sortedBasketball = sortProducts(basketballShoes)
-    const sortedFormal = sortProducts(formalShoes)
-    const sortedChild = sortProducts(childShoes)
+    const runningList = [...customRunning, ...runnig]
+    const causalList = [...customCausal, ...causalShoes]
+    const sportsList = [...customSports, ...sportsShoes]
+    const basketballList = [...customBasketball, ...basketballShoes]
+    const formalList = [...customFormal, ...formalShoes]
+    const childList = [...customChild, ...childShoes]
 
-    const totalAllProducts = allShoes.length
+    const sortedAllShoes = filterAndSortProducts(allShoes)
+    const sortedRunning = filterAndSortProducts(runningList)
+    const sortedCausal = filterAndSortProducts(causalList)
+    const sortedSports = filterAndSortProducts(sportsList)
+    const sortedBasketball = filterAndSortProducts(basketballList)
+    const sortedFormal = filterAndSortProducts(formalList)
+    const sortedChild = filterAndSortProducts(childList)
 
     const categoryDetails = {
 
         all: {
-            totalProducts: totalAllProducts,
+            totalProducts: sortedAllShoes.length,
             categoryName: 'All Products',
             component: <AllShoes products={sortedAllShoes} />,
         },
 
         running: {
-            totalProducts: runnig.length,
+            totalProducts: sortedRunning.length,
             categoryName: 'Running Products',
             component: <RunningShoes products={sortedRunning} />,
         },
 
         causal: {
-            totalProducts: causalShoes.length,
+            totalProducts: sortedCausal.length,
             categoryName: 'Causal Products',
             component: <CausalShoes products={sortedCausal} />,
         },
 
         sports: {
-            totalProducts: sportsShoes.length,
+            totalProducts: sortedSports.length,
             categoryName: 'Sports Products',
             component: <SportsShoes products={sortedSports} />,
         },
 
         basketball: {
-            totalProducts: basketballShoes.length,
+            totalProducts: sortedBasketball.length,
             categoryName: 'BasketBall Products',
             component: <BasketBallShoes products={sortedBasketball} />,
         },
 
         formal: {
-            totalProducts: formalShoes.length,
+            totalProducts: sortedFormal.length,
             categoryName: 'Formal Products',
             component: <FormalShoes products={sortedFormal} />,
         },
 
         child: {
-            totalProducts: childShoes.length,
+            totalProducts: sortedChild.length,
             categoryName: 'Child Shoes',
             component: <ChildShoes products={sortedChild} />,
         },
     }
 
-    const selectedCategory = categoryDetails[activeCategory]
+    const selectedCategory = categoryDetails[activeCategory] || categoryDetails.all
 
     return (
 
-        <div className='mt-15 bg-blue-50 px-4 pb-10'>
+        <div className='mt-16 bg-slate-50/80 px-4 pb-16 min-h-screen'>
 
-            <div className='mb-8 bg-blue-600 px-6 py-26 text-center text-white'>
+            {/* Premium Hero Banner */}
+            <div className='mb-10 relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-800 px-8 py-20 text-center text-white shadow-2xl shadow-blue-600/20'>
+                <div className='absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/10 blur-3xl pointer-events-none' />
+                <div className='absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-cyan-400/20 blur-3xl pointer-events-none' />
 
-                <h1 className='text-5xl font-bold'>
-                    Our Collection
+                <span className='inline-block rounded-full bg-white/15 backdrop-blur-md px-4 py-1.5 text-xs font-black uppercase tracking-widest text-cyan-200 border border-white/20 mb-3'>
+                  Premium Footwear Catalog
+                </span>
+
+                <h1 className='text-4xl md:text-6xl font-black tracking-tight drop-shadow-sm'>
+                    Our Footwear Collection
                 </h1>
 
-                <p className='mt-3 text-2xl'>
-                    Find your perfect pair from our premium selection
+                <p className='mt-3 text-lg md:text-xl font-medium text-blue-100 max-w-2xl mx-auto'>
+                    Find your perfect pair from our curated selection of high-performance & luxury shoes.
                 </p>
-
             </div>
+
             <DashBoard
                 activeCategory={activeCategory}
                 setActiveCategory={changeCategory}
@@ -133,6 +175,8 @@ function Product({ initialCategory = 'all', categoryRoutes = {} }) {
                 categoryName={selectedCategory.categoryName}
                 price={price}
                 setPrice={setPrice}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
             >
 
                 {selectedCategory.component}

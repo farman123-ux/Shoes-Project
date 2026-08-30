@@ -1,22 +1,44 @@
 import React, { useEffect, useState } from 'react'
-import { useLocation, useParams } from 'react-router-dom'
+import { useLocation, useParams, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import { childShoes } from '../../../../constant/childrenShoes'
 import { childDetail } from '../../../../constant/details/child'
+import { addToCart } from '../../../../../store/cartSlice.js'
+import iconStar from '../../../../../assets/start.svg'
+import DetailNavbar from '../../../../DetailNavbar.jsx'
 
 function ChildShoesDetail() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { customProducts = [] } = useSelector((state) => state.product)
+  const { user } = useSelector((state) => state.order)
+
   const { heading } = useParams()
   const { state } = useLocation()
   const [calculate, setCalculate] = useState(1)
-  const [smallsize, setSmallsize] = useState(null)
+  const [smallsize, setSmallsize] = useState('39')
   const [inc, setInc] = useState(false)
   const [dec, setDec] = useState(false)
-  const [active, setActive] = useState(false)
   const [showMessage, setShowMessage] = useState(false)
 
-  const productHeading = decodeURIComponent(heading || "")
+  const productHeading = decodeURIComponent(heading || '')
   const productState = state?.product
-  const compareProduct = childShoes.find((product) => product.heading === productHeading)
+  const compareProduct =
+    customProducts.find((p) => p.heading === productHeading) ||
+    childShoes.find((product) => product.heading === productHeading)
   const product = productState || compareProduct
+
+  const currentProduct = childDetail.find((item) => item.id === product?.id)
+
+  const [mainimage, setMainimage] = useState(product?.Image || '')
+  const images = currentProduct?.ImageA ?? (product?.Image ? [product.Image] : [])
+  const constantSizes = ['39', '40', '41', '42', '43', '44', '45']
+
+  useEffect(() => {
+    setMainimage(product?.Image || '')
+    setCalculate(1)
+    setSmallsize('39')
+  }, [product?.Image])
 
   if (!product) {
     return (
@@ -25,26 +47,6 @@ function ChildShoesDetail() {
       </div>
     )
   }
-
-  const currentProduct = childDetail.find((item) => item.id === product?.id)
-  if (!currentProduct) {
-    return (
-      <div className='mt-30 px-6 text-center'>
-        <h1 className='text-3xl font-bold'>Product not Found</h1>
-      </div>
-    )
-  }
-
-  const [mainimage, setMainimage] = useState(product?.Image || "")
-  const images = currentProduct?.ImageA ?? []
-  const sizes = currentProduct?.Size ?? []
-  const icons = currentProduct?.IconA ?? []
-
-  useEffect(() => {
-    setMainimage(product?.Image || "")
-    setCalculate(1)
-    setSmallsize(null)
-  }, [product?.Image])
 
   const increment = () => {
     setCalculate(calculate + 1)
@@ -65,144 +67,191 @@ function ChildShoesDetail() {
   }
 
   const subtotal = product?.price * calculate
-  const tax = subtotal * 0
+  const tax = 0
   const delivery = Math.max(500 + (calculate - 1) * 400)
   const total = subtotal + tax + delivery
-    return (
-      <div className='mt-30'>
-        <div className=' p-5 flex gap-10 items-start justify-between'>
-          <div className='w-1/2'>
-            <div className='object-cover border border-gray-600/20 p-3 rounded-lg bg-gray-400/20'>
-              <img
-                src={mainimage}
-                alt={product.heading}
-                className='w-full h-125 border rounded-lg  border-gray-600/20 bg-white object-contain'
-              />
-            </div>
+
+  const handleAddToCart = () => {
+    const activeSize = smallsize || '39'
+
+    const cartPayload = {
+      id: product.id || `${Date.now()}`,
+      heading: product.heading,
+      para: product.para || 'Child',
+      Image: mainimage || product.Image,
+      category: 'child',
+      size: activeSize,
+      price: product.price,
+      currency: product.Currancy || product.currancy || 'PKR',
+      quantity: calculate,
+      subtotal,
+      delivery,
+      tax,
+      total,
+    }
+
+    dispatch(addToCart(cartPayload))
+
+    if (user) {
+      navigate('/cart')
+    } else {
+      navigate('/login')
+    }
+  }
+
+  return (
+    <div className='mt-24 px-4 md:px-10 pb-16 max-w-7xl mx-auto'>
+      <DetailNavbar shoeName={product.heading} categoryName="Child Shoes" />
+
+      <div className='p-5 flex flex-col md:flex-row gap-10 items-start justify-between bg-white rounded-2xl border border-gray-200 shadow-sm'>
+        {/* Left Side - Original Image Design */}
+        <div className='w-full md:w-1/2 space-y-4'>
+          <div className='object-cover border border-gray-600/20 p-3 rounded-lg bg-gray-400/20'>
+            <img
+              src={mainimage}
+              alt={product.heading}
+              className='w-full h-125 border rounded-lg border-gray-600/20 bg-white object-contain'
+            />
           </div>
-          <div className='w-1/2'>
-            <div>
-              <p className='px-2 py-1.5 w-20 rounded-2xl bg-gray-400'>
-                {product.para}
-              </p>
 
-              <h1 className='font-bold text-4xl mt-2'>
-                {product.heading}
-              </h1>
-            </div>
+          <div className='rounded-xl border border-blue-200 bg-blue-50/50 p-4 space-y-2 text-xs text-gray-700'>
+            <h3 className='font-bold text-sm text-blue-900 border-b border-blue-200 pb-1'>
+              Brand Quality & Shoe Specifications
+            </h3>
+            <p><strong>Brand Quality:</strong> {product.brandQuality || 'Comfortable Kids Comfort & Non-Slip Sole'}</p>
+            <p><strong>Sole Type:</strong> Soft Rubber Grip & Lightweight Sole</p>
+            <p><strong>Material:</strong> Breathable Fabric & Soft Lining</p>
+            <p><strong>Warranty:</strong> 100% Kids Safe Quality Guarantee</p>
+          </div>
+        </div>
 
-            <div className='mt-3 flex items-center gap-0.5'>
-              {icons.map((icon, index) => (
-                <div key={index} className='flex gap-0.5'>
-                  {typeof icon === 'string' ? (
-                    <img src={icon} alt='' className='h-4 w-4 ' />
-                  ) : (
-                    React.createElement(icon, { className: 'h-5 w-5' })
-                  )}
-                </div>
-              ))}
-            </div>
+        {/* Right Side */}
+        <div className='w-full md:w-1/2'>
+          <div>
+            <p className='px-3 py-1 text-xs font-bold rounded-2xl bg-blue-100 text-blue-800 w-max'>
+              {product.para || 'Child'}
+            </p>
 
-            <div className='flex gap-1 font-bold text-2xl text-blue-500 mt-3'>
-              <h1>{product.Currancy || product.currancy}</h1>
-              <h1>{product.price}</h1>
-            </div>
+            <h1 className='font-bold text-4xl mt-2 text-gray-900'>
+              {product.heading}
+            </h1>
+          </div>
 
-            <div className='py-1 px-1  flex gap-3 mt-5 flex-wrap'>
+          <div className='mt-3 flex items-center gap-2'>
+            <img src={product.icon || iconStar} alt='Star Rating' className='h-4 w-4' />
+            <span className='font-bold text-sm text-gray-800'>{product.rat || 4.8} / 5.0</span>
+            <span className='text-xs text-gray-500'>(Kids Choice)</span>
+          </div>
+
+          <div className='flex gap-1 font-bold text-3xl text-blue-600 mt-4 items-center'>
+            <span>{product.Currancy || product.currancy || 'PKR'}</span>
+            <span>{product.price}</span>
+          </div>
+
+          {images.length > 0 && (
+            <div className='py-1 px-1 flex gap-3 mt-5 flex-wrap'>
               {images.map((img, index) => (
                 <div key={index} className='object-cover p-2'>
                   <img
                     src={img}
                     alt={product.para}
                     onMouseEnter={() => setMainimage(img)}
-                    className={`w-20 h-20 border rounded-md object-contain cursor-pointer ${mainimage === img
-                      ? 'border-black'
-                      : 'border-gray-300'
-                      }`}
+                    className={`w-20 h-20 border rounded-md object-contain cursor-pointer ${
+                      mainimage === img ? 'border-black' : 'border-gray-300'
+                    }`}
                   />
                 </div>
               ))}
             </div>
-            <div className='mt-5'>
-              <h2 className='font-semibold mb-2'>Size</h2>
+          )}
 
-              <div className='flex gap-3 flex-wrap'>
-                {sizes.map((size) => (
-                  <button
-                    key={size}
-                    className={`py-3 px-5 border font-semibold ${smallsize === size
-                      ? 'bg-blue-600 text-white rounded-lg'
-                      : 'bg-white text-black '
-                      }`}
-                    onClick={() => setSmallsize(size)}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="mt-6">
-              <div className="flex items-center justify-center gap-5">
+          <div className='mt-5'>
+            <h2 className='font-semibold mb-2 text-gray-800'>Available Shoe Sizes</h2>
+
+            <div className='flex gap-3 flex-wrap'>
+              {constantSizes.map((size) => (
                 <button
-                  onClick={decrement}
-                  className={`px-4 py-2 rounded ${dec ? "bg-red-500 text-white" : "bg-gray-300"
-                    }`}
+                  key={size}
+                  className={`py-3 px-5 border font-semibold rounded-lg transition cursor-pointer ${
+                    smallsize === size
+                      ? 'bg-blue-600 text-white shadow-md'
+                      : 'bg-white text-black hover:bg-gray-100'
+                  }`}
+                  onClick={() => setSmallsize(size)}
                 >
-                  -
+                  {size}
                 </button>
-
-                <span className="mx-4 text-lg font-semibold">
-                  {calculate}
-                </span>
-
-                <button
-                  onClick={increment}
-                  className={`px-4 py-2 rounded ${inc ? "bg-green-500 text-white" : "bg-gray-300"
-                    }`}
-                >
-                  +
-                </button>
-              </div>
-
-              {showMessage && (
-                <div className="flex justify-center mt-3">
-                  <div className="bg-red-100 border border-red-500 text-red-700 px-4 py-2 rounded-md text-sm shadow-md">
-                    You cannot buy less than 1 item.
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className='mt-8 mx-auto border border-red-400/40 p-2 w-90  rounded-lg bg-red-400/30'>
-              <div className=' border rounded-lg  border-red-400/10 bg-white'>
-                <div className=' flex justify-between'>
-                  <p className='border-r-2 py-2 px-4 w-1/2 '>subtotal</p>
-                  <p className='py-2 px-4 w-1/2 font-bold'>{subtotal}</p>
-                </div>
-                <div className=' flex justify-between'>
-                  <p className='border-r-2 py-2 px-4 w-1/2'>Tax</p>
-                  <p className='py-2 px-4 w-1/2 font-bold'>{tax}</p>
-                </div>
-
-                <div className='flex justify-between'>
-                  <p className='border-r-2 py-2 px-4 w-1/2'>Delivery</p>
-                  <p className='py-2 px-4 w-1/2 font-bold'>{delivery}</p>
-                </div>
-                <div className='border-t-2 flex justify-between font-bold'>
-                  <p className='border-r-2 py-2 px-4 w-1/2'>Total</p>
-                  <p className='py-2 px-4 w-1/2 '>{total}</p>
-                </div>
-              </div>
-            </div>
-            <div className='justify-center flex mt-5 '>
-                <button onClick={() => setActive(!active)} className={`px-5 py-3 rounded text-white cursor-pointer   ${active ? "bg-green-500" : "bg-red-500"
-                  }`}>Add To card</button>
+              ))}
             </div>
           </div>
 
+          <div className='mt-6'>
+            <div className='flex items-center justify-center md:justify-start gap-5'>
+              <button
+                onClick={decrement}
+                className={`px-4 py-2 rounded font-bold transition cursor-pointer ${
+                  dec ? 'bg-red-500 text-white' : 'bg-gray-300'
+                }`}
+              >
+                -
+              </button>
+
+              <span className='mx-4 text-lg font-bold text-gray-900'>
+                {calculate}
+              </span>
+
+              <button
+                onClick={increment}
+                className={`px-4 py-2 rounded font-bold transition cursor-pointer ${
+                  inc ? 'bg-green-500 text-white' : 'bg-gray-300'
+                }`}
+              >
+                +
+              </button>
+            </div>
+
+            {showMessage && (
+              <div className='flex justify-center md:justify-start mt-3'>
+                <div className='bg-red-100 border border-red-500 text-red-700 px-4 py-2 rounded-md text-sm shadow-md'>
+                  You cannot buy less than 1 item.
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className='mt-8 mx-auto border border-red-400/40 p-2 w-90 rounded-lg bg-red-400/30'>
+            <div className='border rounded-lg border-red-400/10 bg-white'>
+              <div className='flex justify-between'>
+                <p className='border-r-2 py-2 px-4 w-1/2'>Subtotal</p>
+                <p className='py-2 px-4 w-1/2 font-bold'>PKR {subtotal}</p>
+              </div>
+              <div className='flex justify-between'>
+                <p className='border-r-2 py-2 px-4 w-1/2'>Tax</p>
+                <p className='py-2 px-4 w-1/2 font-bold'>PKR {tax}</p>
+              </div>
+              <div className='flex justify-between'>
+                <p className='border-r-2 py-2 px-4 w-1/2'>Delivery</p>
+                <p className='py-2 px-4 w-1/2 font-bold'>PKR {delivery}</p>
+              </div>
+              <div className='border-t-2 flex justify-between font-bold text-blue-900'>
+                <p className='border-r-2 py-2 px-4 w-1/2'>Total</p>
+                <p className='py-2 px-4 w-1/2'>PKR {total}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className='justify-center flex mt-5'>
+            <button
+              onClick={handleAddToCart}
+              className='px-8 py-3.5 rounded-xl text-white font-bold bg-red-600 hover:bg-green-600 transition-all duration-300 shadow-lg cursor-pointer transform hover:-translate-y-0.5'
+            >
+              Add To card
+            </button>
+          </div>
         </div>
       </div>
-    )
-  }
+    </div>
+  )
+}
 
-  export default ChildShoesDetail
+export default ChildShoesDetail

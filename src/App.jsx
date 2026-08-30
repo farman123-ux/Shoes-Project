@@ -1,6 +1,5 @@
 import Navbar from './component/Navbar'
-// ScrollToTop removed
-import { Route, Routes, useLocation } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import Home from './component/pages/Home'
 import About from './component/pages/About'
 import Product from './component/pages/product/Product'
@@ -12,6 +11,9 @@ import SportsShoesDetail from './component/pages/product/category/Sports/SportsS
 import BasketBallShoesDetail from './component/pages/product/category/basketball/BasketBallShoesDetail'
 import ChildShoesDetail from './component/pages/product/category/child/ChildShoesDetail'
 import FormalShoesDetial from './component/pages/product/category/formal/FormalShoesDetail'
+import CartPage from './component/pages/CartPage'
+import OrdersPage from './component/pages/OrdersPage'
+import LoginPage from './component/pages/LoginPage'
 
 const productCategoryRoutes = {
   all: '/product/all',
@@ -35,20 +37,24 @@ const productRoutes = [
 ]
 
 export default function App() {
- 
   return (
     <>
-
       <Navbar />
-      
 
       <Routes>
-
         <Route path='/' element={<Home />} />
-
         <Route path='/about' element={<About />} />
 
-        {/* Product category routes live here, so Product.jsx does not store URL paths. */}
+        {/* Login Route */}
+        <Route path='/login' element={<LoginPage />} />
+
+        {/* Dedicated Cart & Checkout Page */}
+        <Route path='/cart' element={<CartPage />} />
+
+        {/* Dedicated Orders History Page */}
+        <Route path='/orders' element={<OrdersPage />} />
+
+        {/* Product category routes */}
         {productRoutes.map((route) => (
           <Route
             key={route.path}
@@ -62,22 +68,18 @@ export default function App() {
           />
         ))}
 
-        {/* This route opens the exact running shoe card by its heading. */}
+        {/* Shoe Detail routes */}
         <Route path='/product/running-shoes/:heading' element={<RunningShoesDetail />} />
-        <Route path='/product/causal-shoes/:heading' element={<CausalShoesDetail/>}/>
-        <Route path='/product/sport-shoes/:heading' element={<SportsShoesDetail/>}/>
-        <Route path='/product/basketball-shoes/:heading' element={<BasketBallShoesDetail/>}/>
-        <Route path='/product/childs-shoes/:heading' element={<ChildShoesDetail/>}/>
-        <Route path='/product/formal-shoes/:heading' element={<FormalShoesDetial/>}/>
-
-
+        <Route path='/product/causal-shoes/:heading' element={<CausalShoesDetail />} />
+        <Route path='/product/sport-shoes/:heading' element={<SportsShoesDetail />} />
+        <Route path='/product/basketball-shoes/:heading' element={<BasketBallShoesDetail />} />
+        <Route path='/product/childs-shoes/:heading' element={<ChildShoesDetail />} />
+        <Route path='/product/formal-shoes/:heading' element={<FormalShoesDetial />} />
 
         <Route path='/contact' element={<Contact />} />
-
       </Routes>
 
-      { <Footer />}
-
+      <Footer />
     </>
   )
 }

@@ -10,6 +10,8 @@ function DashBoard({
   setActiveCategory,
   price,
   setPrice,
+  searchQuery,
+  setSearchQuery,
 }) {
   return (
     <div className='mx-auto flex max-w-[1400px] overflow-hidden rounded-2xl border border-blue-100 bg-blue-50 shadow-sm'>
@@ -22,6 +24,8 @@ function DashBoard({
           categoryName={categoryName}
           price={price}
           setPrice={setPrice}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
         />
         <main className='bg-blue-50'>
           {children}
